@@ -17,22 +17,28 @@ int main(int argc, char * argv[]) {
 
 	in_file >> num_words;
 
-	char ** words = new char*[num_words];
+	/*const char ** words = new const char*[num_words];
+	//char temp_bufs */
+
+	string * words = new string[num_words];
 	for (int i=0; i<num_words; i++) {
 		string word;
 		in_file >> word;
-		int length = word.length();
+		/*int length = word.length();
 		words[i] = new char[length];
 		words[i] = word.c_str();
-		//words[i] = word.c_str();
+		//words[i] = word.c_str(); */
+		words[i] = word;
 	}
 
 	for (int i=0; i<num_words; i++) {
 		cout << words[i] << endl;
-		delete [] words[i];
+		//delete [] words[i];
 	} 
 
 
 	delete [] words;
 
 }
+
+void prind_last(string * )
