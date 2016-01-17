@@ -2,6 +2,15 @@
 #include <fstream>
 using namespace std;
 
+void print_last(string * terms, int length) {
+	if (length == 0) {
+		return;
+	} else {
+		cout << terms[length-1] << endl;
+		print_last(terms, length-1);
+	}
+}
+
 int main(int argc, char * argv[]) {
 	if (argc != 2) {
 		cerr << "Incorrect command line argument format!" << endl;
@@ -30,15 +39,15 @@ int main(int argc, char * argv[]) {
 		//words[i] = word.c_str(); */
 		words[i] = word;
 	}
-
+ /*
 	for (int i=0; i<num_words; i++) {
 		cout << words[i] << endl;
 		//delete [] words[i];
-	} 
+	}  */
 
+	print_last(words, num_words);
 
 	delete [] words;
 
 }
 
-void prind_last(string * )
