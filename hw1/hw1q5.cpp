@@ -11,7 +11,7 @@ void print_last(string * terms, int length) {
 	}
 }
 
-int main(int argc, char * argv[]) {
+int main(int argc, char * argv[]) { 
 	if (argc != 2) {
 		cerr << "Incorrect command line argument format!" << endl;
 		cerr << "Correct format: Program_name File_name" << endl;
