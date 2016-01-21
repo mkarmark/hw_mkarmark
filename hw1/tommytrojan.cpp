@@ -28,6 +28,10 @@ int main(int argc, char* argv[])
 	  floorsizes[i] = 0;
 	  trojans[i] = NULL;
   }
+
+  string garbageLine;
+  getline(input, garbageLine);
+  //int count = 0;
   while(getline(input, curr)) {
 	  stringstream ss;
 	  ss << curr;
@@ -40,16 +44,18 @@ int main(int argc, char* argv[])
 			output << "Error - incorrect command" << endl;
 		  }
 		  else {
-		  	 if (trojans[i] != NULL) {
-		  	 	output << "Error - floor " << i << " is not empty" << endl;
-		  	 } else if (i < 0 || i >= floors) {
+		  	 if (i <=0 || i > floors) {
 		  	 	output << "Error - floor " << i << " does not exist" << endl;
+		  	 } else if (trojans[i-1] != NULL) {
+		  	 	output << "Error - floor " << i << " is not empty" << endl;
+		  	 //} else if (i <= 0 || i > floors) {
+		  	 	//output << "Error - floor " << i << " does not exist" << endl;
 		  	 } else {
-		  	 	trojans[i] = new string*[k];
+		  	 	trojans[i-1] = new string*[k];
 		  	 	for (int a = 0; a < k; a++) {
-		  	 		trojans[i][a] = NULL;
+		  	 		trojans[i-1][a] = NULL;
 		  	 	}
-		  	 	floorsizes[i] = k;
+		  	 	floorsizes[i-1] = k;
 		  	 }
 		  }
 	  }
@@ -60,10 +66,10 @@ int main(int argc, char* argv[])
 			output << "Error - incorrect command" << endl;
 		}
 		else {
-			if (trojans[i] == NULL) {
+			if (i<= 0 || i > floors) { 
+				output << "Error - floor " << i << " does not exist" << endl; 
+			} else if (trojans[i] == NULL) {
 				output << "Error - floor " << i << " is already empty" << endl;
-			} else if (i < 0 || i >= floors) {
-				output << "Error - floor " << i << " does not exist" << endl;
 			} else {
 				//DELETE
 				for (int a = 0; a < floorsizes[i]; a++) {
@@ -72,6 +78,7 @@ int main(int argc, char* argv[])
 					}
 				}
 				delete [] trojans[i];
+				floorsizes[i] = 0;
 			}
 		}
 	  }
@@ -133,7 +140,11 @@ int main(int argc, char* argv[])
 		}
 	  }
 	  else {
-	  	for (int i=0; i<floors; i++) {
+	  	//cerr an error
+	  }
+  }
+
+  for (int i=0; i<floors; i++) {
 	  		for (int j=0; j<floorsizes[i]; j++) {
 	  			if (trojans[i][j] != NULL) {
 	  				delete [] trojans[i][j];
@@ -147,7 +158,7 @@ int main(int argc, char* argv[])
 	  	}
 	  	delete [] trojans;
 	  	trojans = NULL;
-	  }
-  }
+	  	delete [] floorsizes;
+	  	floorsizes = NULL;
   return 0;
 }
