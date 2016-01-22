@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 				delete [] trojans[i-1];
 				trojans[i] = NULL;
 
-				delete [] num_possessions[i];
+				delete [] num_possessions[i-1];
 				num_possessions[i-1] = NULL;
 
 				floorsizes[i] = 0;
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 	  		} else if (trojans[i-1][j-1] != NULL) {
 	  			output << "Error - student " << j << " on floor " << i << " already has possessions" << endl;
 	  		} else {
-	  			trojans[i][j] = new string[k];
+	  			trojans[i-1][j-1] = new string[k];
 	  			num_possessions[i-1][j-1] = k;
 	  			for (int a = 0; a < k; a++) {
 	  				string n;
@@ -122,12 +122,9 @@ int main(int argc, char* argv[])
 	  				if (ss.fail()) {
 	  					output << "Error - discrepancy between the number of possessions listed and the number of strings following" << endl;
 		  			} else {
-		  				trojans[i][j][a] = "";
+		  				trojans[i-1][j-1][a] = n;
 		  			}
-		  			trojans[i][j][a] = n;
 	  			}
-
-	  			//trojans[i][j][k] == "";
 	  		}
 	  	}
 	  }
@@ -163,7 +160,7 @@ int main(int argc, char* argv[])
 
   for (int i=0; i<floors; i++) {
 	  		for (int j=0; j<floorsizes[i]; j++) {
-	  			if (trojans[i][j] != NULL) {
+	  			if (trojans[i] != NULL && trojans[i][j] != NULL) {
 	  				delete [] trojans[i][j];
 	  				trojans[i][j] = NULL;
 	  			}
@@ -171,11 +168,16 @@ int main(int argc, char* argv[])
 	  		if (trojans[i] != NULL) {
 	  			delete [] trojans[i];
 	  			trojans[i] = NULL;
+
+	  			delete [] num_possessions[i];
+	  			num_possessions[i] = NULL;
 	  		}
 	  	}
 	  	delete [] trojans;
 	  	trojans = NULL;
 	  	delete [] floorsizes;
 	  	floorsizes = NULL;
+	  	delete [] num_possessions;
+	  	num_possessions = NULL;
   return 0;
 }
