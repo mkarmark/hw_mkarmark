@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
   int floors;
   int *floorsizes;
   string ***trojans;
+  //int **num_
   string curr;
 
   input >> floors;
