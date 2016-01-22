@@ -4,6 +4,66 @@
 
 using namespace std;
 
+void clear_building(int floors, int* &floorsizes, string ***&trojans, int **&num_possessions) {
+	for (int i=0; i<floors; i++) {
+	  	for (int j=0; j<floorsizes[i]; j++) {
+	  		if (trojans[i] != NULL && trojans[i][j] != NULL) {
+	  			delete [] trojans[i][j];
+	  			trojans[i][j] = NULL;
+	  		}
+	  	}
+	  	if (trojans[i] != NULL) {
+	  		delete [] trojans[i];
+	  		trojans[i] = NULL;
+
+	  		delete [] num_possessions[i];
+	  		num_possessions[i] = NULL;
+	  	}
+	}
+	delete [] trojans;
+	trojans = NULL;
+	delete [] floorsizes;
+	floorsizes = NULL;
+	delete [] num_possessions;
+	num_possessions = NULL;
+}
+
+string is_floor_valid(int floor_number, int floors, string ***trojans, bool need_floor_empty) {
+	string return_string;
+	stringstream ss;
+	ss << "";
+	if (floor_number <= 0 || floor_number > floors) {
+		ss << "Error - floor " << floor_number << " does not exist" << endl;
+	} else {
+		if (trojans[floor_number-1] != NULL && need_floor_empty) {
+			ss << "Error - floor " << floor_number-1 << " is not empty" << endl;
+		} else if (trojans[floor_number-1] == NULL && !need_floor_empty) {
+			ss << "Error  floor " << floor_number << " is already empty" << endl;
+		}
+	}
+
+	ss >> return_string;
+	return return_string;
+}
+
+string is_student_valid_on_floor(int student_number, int floor_number, int floors, int *floorsizes, string ***trojans) {
+	string return_string;
+	stringstream ss;
+	ss << "";
+	string floor_is_invalid = is_floor_valid(floor_number, floors, trojans, true);
+	if (floor_is_invalid.compare("") != 0) {
+		return floor_is_invalid;
+	} else {
+		if (student_number <= 0 || student_number > floorsizes[floor_number-1]) {
+			ss << "Error - student " << student_number << " does not exist on floor " << floor_number << endl;
+		} else if (trojans[floor_number-1][student_number-1] != NULL) {
+			ss << "Error - student " << student_number << " on floor " << floor_number << " already has possessions" << endl;
+		}
+		ss >> return_string;
+		return return_string;
+	}
+}
+
 int main(int argc, char* argv[])
 {
   if(argc < 3){
@@ -47,13 +107,10 @@ int main(int argc, char* argv[])
 			output << "Error - incorrect command" << endl;
 		  }
 		  else {
-		  	 if (i <=0 || i > floors) {
-		  	 	output << "Error - floor " << i << " does not exist" << endl;
-		  	 } else if (trojans[i-1] != NULL) {
-		  	 	output << "Error - floor " << i << " is not empty" << endl;
-		  	 //} else if (i <= 0 || i > floors) {
-		  	 	//output << "Error - floor " << i << " does not exist" << endl;
-		  	 } else {
+		  	string floor_is_valid = is_floor_valid(i, floors, trojans, true);
+		  	if (floor_is_valid.compare("") != 0) {
+		  		output << floor_is_valid << endl;
+		  	} else {
 		  	 	trojans[i-1] = new string*[k];
 		  	 	num_possessions[i-1] = new int[k];
 		  	 	for (int a = 0; a < k; a++) {
@@ -61,7 +118,6 @@ int main(int argc, char* argv[])
 		  	 		num_possessions[i-1][a] = 0;
 		  	 	}
 		  	 	floorsizes[i-1] = k;
-		  	 	//num_possessions[i-1] = new int[k];
 		  	 }
 		  }
 	  }
@@ -72,19 +128,14 @@ int main(int argc, char* argv[])
 			output << "Error - incorrect command" << endl;
 		}
 		else {
-			if (i<= 0 || i > floors) { 
-				output << "Error - floor " << i << " does not exist" << endl; 
-			} else if (trojans[i-1] == NULL) {
-				output << "Error - floor " << i << " is already empty" << endl;
+			string floor_is_valid = is_floor_valid(i, floors, trojans, false);
+			if (floor_is_valid.compare("") != 0) { 
+				output << floor_is_valid << endl; 
 			} else {
-				//DELETE
 				for (int a = 0; a < floorsizes[i]; a++) {
 					if (trojans[i-1][a] != NULL) {
 						delete [] trojans[i][a];
 						trojans[i-1][a] = NULL;
-
-						//delete [] num_possessions[i][a];
-						//trojans[i][a] = NULL;
 					}
 				}
 				delete [] trojans[i-1];
@@ -105,27 +156,16 @@ int main(int argc, char* argv[])
 	  	if (ss.fail()) {
 	  		output << "Error - incorrect command" << endl;
 	  	} else {
-	  		if (i<=0 || i>floors) {
-	  			output << "Error - floor " << i << " does not exist" << endl;
-	  		} else if (trojans[i-1] == NULL) {
-	  			output << "Error - floor " << i << " is empty" << endl;
-	  		//} else if (i <= 0 || i > floors) {
-	  			//output << "Error - floor " << i << " does not exist" << endl;
-	  		} else if (j <= 0 || j > floorsizes[i-1]) {
-	  			output << "Error - student " << j << " does not exist on floor " << i << endl;
-	  		} else if (trojans[i-1][j-1] != NULL) {
-	  			output << "Error - student " << j << " on floor " << i << " already has possessions" << endl;
+	  		string student_is_valid_on_floor = is_student_valid_on_floor(j, i, floors, floorsizes, trojans);
+	  		if (student_is_valid_on_floor.compare("") != 0) {
+	  			output << student_is_valid_on_floor << endl;
 	  		} else {
 	  			trojans[i-1][j-1] = new string[k];
 	  			num_possessions[i-1][j-1] = k;
 	  			for (int a = 0; a < k; a++) {
 	  				string n;
 	  				ss >> n;
-	  				if (ss.fail()) {
-	  					output << "Error - discrepancy between the number of possessions listed and the number of strings following" << endl;
-		  			} else {
-		  				trojans[i-1][j-1][a] = n;
-		  			}
+		  			trojans[i-1][j-1][a] = n;
 	  			}
 	  		}
 	  	}
@@ -138,53 +178,21 @@ int main(int argc, char* argv[])
 			output << "Error - incorrect command" << endl;
 		}
 		else {
-			if (i <= 0 || i > floors){
-				output << "Error - floor " << i << " does not exist" << endl;
-			} else if (trojans[i-1] == NULL) {
-		  		output << "Error - floor " << i << " is empty" << endl;
-		  	//} else if (i < 0 || i >= floors) {
-		  		//output << "Error - floor " << i << " does not exist" << endl;
-		  	} else if (j <= 0 || j > floorsizes[i-1]) {
-	  			output << "Error - student " << j << " does not exist on floor " << i << endl;
-		  	} else if (trojans[i-1][j-1] == NULL) {
-	  			output << "Error - student " << j << " on floor " << i << " has no possessions" << endl;
-	  		} else {
-	  			//int k=0;
-	  			//while (trojans[i][j][k] != "") {
-	  				//output << trojans[i][j][k] << endl;
-	  				//k++;
-	  			//}
+			string student_is_valid_on_floor = is_student_valid_on_floor(j, i, floors, floorsizes, trojans);
+			if (student_is_valid_on_floor.compare("") != 0) {
+				output << student_is_valid_on_floor << endl;
+			} else {
 	  			for (int a = 0; a < num_possessions[i-1][j-1]; a++) {
 	  				output << trojans[i-1][j-1][a] << endl;
 	  			}
-	  		}
-		}
-	  }
+			}
+	  	}
+	  }	
 	  else {
-	  	//cerr an error
+	  	output << "Error - line does not begin with one of four commands: MOVEIN, MOVEOUT, OBTAIN, OUTPUT" << endl;
 	  }
   }
 
-   for (int i=0; i<floors; i++) {
-	  		for (int j=0; j<floorsizes[i]; j++) {
-	  			if (trojans[i] != NULL && trojans[i][j] != NULL) {
-	  				delete [] trojans[i][j];
-	  				trojans[i][j] = NULL;
-	  			}
-	  		}
-	  		if (trojans[i] != NULL) {
-	  			delete [] trojans[i];
-	  			trojans[i] = NULL;
-
-	  			delete [] num_possessions[i];
-	  			num_possessions[i] = NULL;
-	  		}
-	  	}
-	  	delete [] trojans;
-	  	trojans = NULL;
-	  	delete [] floorsizes;
-	  	floorsizes = NULL;
-	  	delete [] num_possessions;
-	  	num_possessions = NULL;
+  clear_building(floors, floorsizes, trojans, num_possessions);
   return 0;
 }
