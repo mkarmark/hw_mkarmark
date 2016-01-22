@@ -105,10 +105,12 @@ int main(int argc, char* argv[])
 	  	if (ss.fail()) {
 	  		output << "Error - incorrect command" << endl;
 	  	} else {
-	  		if (trojans[i-1] == NULL) {
-	  			output << "Error - floor" << i << " is already empty" << endl;
-	  		} else if (i <= 0 || i > floors) {
+	  		if (i<=0 || i>floors) {
 	  			output << "Error - floor " << i << " does not exist" << endl;
+	  		} else if (trojans[i-1] == NULL) {
+	  			output << "Error - floor " << i << " is empty" << endl;
+	  		//} else if (i <= 0 || i > floors) {
+	  			//output << "Error - floor " << i << " does not exist" << endl;
 	  		} else if (j <= 0 || j > floorsizes[i-1]) {
 	  			output << "Error - student " << j << " does not exist on floor " << i << endl;
 	  		} else if (trojans[i-1][j-1] != NULL) {
@@ -136,19 +138,24 @@ int main(int argc, char* argv[])
 			output << "Error - incorrect command" << endl;
 		}
 		else {
-			if (trojans[i] != NULL) {
-		  		output << "Error - floor " << i << " is not empty" << endl;
-		  	} else if (i < 0 || i >= floors) {
-		  		output << "Error - floor " << i << " does not exist" << endl;
-		  	} else if (j < 0 || j >= floorsizes[i]) {
+			if (i <= 0 || i > floors){
+				output << "Error - floor " << i << " does not exist" << endl;
+			} else if (trojans[i-1] == NULL) {
+		  		output << "Error - floor " << i << " is empty" << endl;
+		  	//} else if (i < 0 || i >= floors) {
+		  		//output << "Error - floor " << i << " does not exist" << endl;
+		  	} else if (j <= 0 || j > floorsizes[i-1]) {
 	  			output << "Error - student " << j << " does not exist on floor " << i << endl;
-		  	} else if (trojans[i][j] == NULL) {
+		  	} else if (trojans[i-1][j-1] == NULL) {
 	  			output << "Error - student " << j << " on floor " << i << " has no possessions" << endl;
 	  		} else {
-	  			int k=0;
-	  			while (trojans[i][j][k] != "") {
-	  				output << trojans[i][j][k] << endl;
-	  				k++;
+	  			//int k=0;
+	  			//while (trojans[i][j][k] != "") {
+	  				//output << trojans[i][j][k] << endl;
+	  				//k++;
+	  			//}
+	  			for (int a = 0; a < num_possessions[i-1][j-1]; a++) {
+	  				output << trojans[i-1][j-1][a] << endl;
 	  			}
 	  		}
 		}
