@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
   int floors;
   int *floorsizes;
   string ***trojans;
-  //int **num_
+  int **num_possessions;
   string curr;
 
   input >> floors;
@@ -24,10 +24,12 @@ int main(int argc, char* argv[])
 
   //you will need to keep track of how many people are on each floor.
   floorsizes = new int[floors];
+  num_possessions = new int*[floors];
 
   for (int i = 0; i < floors; i++) {
 	  floorsizes[i] = 0;
 	  trojans[i] = NULL;
+	  num_possessions[i] = NULL;
   }
 
   string garbageLine;
@@ -53,10 +55,13 @@ int main(int argc, char* argv[])
 		  	 	//output << "Error - floor " << i << " does not exist" << endl;
 		  	 } else {
 		  	 	trojans[i-1] = new string*[k];
+		  	 	num_possessions[i-1] = new int[k];
 		  	 	for (int a = 0; a < k; a++) {
 		  	 		trojans[i-1][a] = NULL;
+		  	 		num_possessions[i-1][a] = 0;
 		  	 	}
 		  	 	floorsizes[i-1] = k;
+		  	 	//num_possessions[i-1] = new int[k];
 		  	 }
 		  }
 	  }
@@ -69,16 +74,25 @@ int main(int argc, char* argv[])
 		else {
 			if (i<= 0 || i > floors) { 
 				output << "Error - floor " << i << " does not exist" << endl; 
-			} else if (trojans[i] == NULL) {
+			} else if (trojans[i-1] == NULL) {
 				output << "Error - floor " << i << " is already empty" << endl;
 			} else {
 				//DELETE
 				for (int a = 0; a < floorsizes[i]; a++) {
-					if (trojans[i][a] != NULL) {
+					if (trojans[i-1][a] != NULL) {
 						delete [] trojans[i][a];
+						trojans[i-1][a] = NULL;
+
+						//delete [] num_possessions[i][a];
+						//trojans[i][a] = NULL;
 					}
 				}
-				delete [] trojans[i];
+				delete [] trojans[i-1];
+				trojans[i] = NULL;
+
+				delete [] num_possessions[i];
+				num_possessions[i-1] = NULL;
+
 				floorsizes[i] = 0;
 			}
 		}
@@ -91,16 +105,17 @@ int main(int argc, char* argv[])
 	  	if (ss.fail()) {
 	  		output << "Error - incorrect command" << endl;
 	  	} else {
-	  		if (trojans[i] == NULL) {
+	  		if (trojans[i-1] == NULL) {
 	  			output << "Error - floor" << i << " is already empty" << endl;
-	  		} else if (i < 0 || i >= floors) {
+	  		} else if (i <= 0 || i > floors) {
 	  			output << "Error - floor " << i << " does not exist" << endl;
-	  		} else if (j < 0 || j >= floorsizes[i]) {
+	  		} else if (j <= 0 || j > floorsizes[i-1]) {
 	  			output << "Error - student " << j << " does not exist on floor " << i << endl;
-	  		} else if (trojans[i][j] != NULL) {
+	  		} else if (trojans[i-1][j-1] != NULL) {
 	  			output << "Error - student " << j << " on floor " << i << " already has possessions" << endl;
 	  		} else {
-	  			trojans[i][j] = new string[k+1];
+	  			trojans[i][j] = new string[k];
+	  			num_possessions[i-1][j-1] = k;
 	  			for (int a = 0; a < k; a++) {
 	  				string n;
 	  				ss >> n;
@@ -111,7 +126,8 @@ int main(int argc, char* argv[])
 		  			}
 		  			trojans[i][j][a] = n;
 	  			}
-	  			trojans[i][j][k] == "";
+
+	  			//trojans[i][j][k] == "";
 	  		}
 	  	}
 	  }
