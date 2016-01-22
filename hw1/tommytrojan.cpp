@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 					}
 				}
 				delete [] trojans[i-1];
-				trojans[i] = NULL;
+				trojans[i-1] = NULL;
 
 				delete [] num_possessions[i-1];
 				num_possessions[i-1] = NULL;
@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
 	  }
   }
 
-  for (int i=0; i<floors; i++) {
+   for (int i=0; i<floors; i++) {
 	  		for (int j=0; j<floorsizes[i]; j++) {
 	  			if (trojans[i] != NULL && trojans[i][j] != NULL) {
 	  				delete [] trojans[i][j];
