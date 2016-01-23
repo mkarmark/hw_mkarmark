@@ -4,6 +4,14 @@
 
 using namespace std;
 
+/** is_floor_valid A helper function that checks if the floor is a valid one for further manipulations in the building and outputs appropriate error messages
+  * @param int floor_number The floor in the building under consideration
+  * @param int floors Number of floors in the building
+  * @param string ***trojans The 3D array of the possessions of the students on the floor
+  * @param bool need_floor_empty Whether the calling function needs the floor to be empty
+  * @param ofstream &output A parameter referring to the output stream
+  * @return bool False if the floor is invalid, True otherwise
+  */
 bool is_floor_valid(int floor_number, int floors, string ***trojans, bool need_floor_empty, ofstream &output) {
 	if (floor_number <= 0 || floor_number > floors) {
 		output << "Error - floor " << floor_number << " does not exist" << endl;
@@ -20,6 +28,16 @@ bool is_floor_valid(int floor_number, int floors, string ***trojans, bool need_f
 	return true;
 }
 
+/** is_student_valid_on_floor A helper function that checks if the given student is valid on the given floor for further manipulations in the building and outputs appropriate error messages
+  * @param int student_number The index referring to the student under consideration
+  * @param int floor_number The floor in the building under consideration
+  * @param int floors Number of floors in the building
+  * @param int *floorsizes An array keeping track of the number of students on each floor
+  * @param string ***trojans The 3D array of the possessions of the students on the floor
+  * @param ofstream &output A parameter referring to the output stream
+  * @param bool need_possessions Whether the calling function needs the student to have possessions
+  * @return bool False if the student is invalid, True otherwise
+  */
 bool is_student_valid_on_floor(int student_number, int floor_number, int floors, int *floorsizes, string ***trojans, ofstream &output, bool need_possessions) {
 	if (is_floor_valid(floor_number, floors, trojans, false, output)) {
 		if (student_number <= 0 || student_number > floorsizes[floor_number-1]) {
@@ -37,6 +55,13 @@ bool is_student_valid_on_floor(int student_number, int floor_number, int floors,
 	}
 }
 
+/** initialize_variables A function that intializes all the values of the variables declared at the top of main
+  * @param string ***&trojans A reference to the 3D array that keeps track of the possessions of the students on each floor
+  * @param int &floors A reference to the number of floors in the building
+  * @param int *&floorsizes A reference to the array keeping track of the number of students on each floor
+  * @param int **&num_possessions A reference to the 2D array that keeps track of the number of possessions each student has on each floor
+  * @param ifstream &input A parameter referring to the input stream
+  */
 void initialize_variables(string ***&trojans, int &floors, int *&floorsizes, int **&num_possessions, ifstream &input) {
 	input >> floors;
   	trojans = new string**[floors];
@@ -54,6 +79,14 @@ void initialize_variables(string ***&trojans, int &floors, int *&floorsizes, int
   	getline(input, garbageLine);
 }
 
+/** move_in A function in which students move in on a given floor if possible
+  * @param string ***&trojans A reference to the 3D array that keeps track of the possessions of the students on each floor 
+  * @param int floors The number of floors in the building
+  * @param int **&num_possessions A reference to the 2D array that keeps track of the number of possessions each student has on each floor
+  * @param int *&floorsizes A reference to the array keeping track of the number of students on each floor
+  * @param stringstream &ss A reference to the stringstream that parses through each line of the input file
+  * @param ofstream &output A reference to the output stream
+  */
 void move_in(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream &ss, ofstream &output) {
 	int floor_number,num_students;
 	ss >> floor_number;
@@ -74,6 +107,14 @@ void move_in(string ***&trojans, int floors, int **&num_possessions, int *&floor
 	}	  	 	
 }
 
+/** move_out A function in which students move out on a given floor if possible
+  * @param string ***&trojans A reference to the 3D array that keeps track of the possessions of the students on each floor 
+  * @param int floors The number of floors in the building
+  * @param int **&num_possessions A reference to the 2D array that keeps track of the number of possessions each student has on each floor
+  * @param int *&floorsizes A reference to the array keeping track of the number of students on each floor
+  * @param stringstream &ss A reference to the stringstream that parses through each line of the input file
+  * @param ofstream &output A reference to the output stream
+  */
 void move_out(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream &ss, ofstream &output) {
 	int floor_number;
 	ss >> floor_number;
@@ -99,6 +140,14 @@ void move_out(string ***&trojans, int floors, int **&num_possessions, int *&floo
 	}
 }
 
+/** obtain_possessions A function in which a given student on a given floor receives possessions if possible 
+  * @param string ***&trojans A reference to the 3D array that keeps track of the possessions of the students on each floor 
+  * @param int floors The number of floors in the building
+  * @param int **&num_possessions A reference to the 2D array that keeps track of the number of possessions each student has on each floor
+  * @param int *&floorsizes A reference to the array keeping track of the number of students on each floor
+  * @param stringstream &ss A reference to the stringstream that parses through each line of the input file
+  * @param ofstream &output A reference to the output stream
+  */
 void obtain_possessions(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream &ss, ofstream &output) {
 	int floor_number, student_number, possessions;
 	ss >> floor_number;
@@ -119,6 +168,14 @@ void obtain_possessions(string ***&trojans, int floors, int **&num_possessions, 
 	}  			
 }
 
+/** output_possessions A function that prints the possessions of a given student on a given floor if possible
+  * @param string ***&trojans A reference to the 3D array that keeps track of the possessions of the students on each floor 
+  * @param int floors The number of floors in the building
+  * @param int **&num_possessions A reference to the 2D array that keeps track of the number of possessions each student has on each floor
+  * @param int *&floorsizes A reference to the array keeping track of the number of students on each floor
+  * @param stringstream &ss A reference to the stringstream that parses through each line of the input file
+  * @param ofstream &output A reference to the output stream
+  */
 void output_possessions(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream& ss, ofstream &output) {
 	int floor_number, student_number;
 	ss >> floor_number;
@@ -135,6 +192,12 @@ void output_possessions(string ***&trojans, int floors, int **&num_possessions, 
 	}
 }
 
+/** clear_building A function that evacuates the entire building, deleting all blocks of memory used on the heap
+  * @param int floors The number of floors in the buildingg
+  * @param string ***&trojans A reference to the 3D array that keeps track of the possessions of the students on each floor 
+  * @param int *&floorsizes A reference to the array keeping track of the number of students on each floor
+  * @param int **&num_possessions A reference to the 2D array that keeps track of the number of possessions each student has on each floor
+  */
 void clear_building(int floors, int* &floorsizes, string ***&trojans, int **&num_possessions) {
 	for (int i=0; i<floors; i++) {
 	  	for (int j=0; j<floorsizes[i]; j++) {
