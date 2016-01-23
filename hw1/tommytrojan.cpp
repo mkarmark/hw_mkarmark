@@ -103,10 +103,10 @@ int main(int argc, char* argv[])
 		  int i,k;
 		  ss >> i;
 		  ss >> k;
-		  if (ss.fail()) {
+		  string garbageVal;
+		  if (ss.fail() || ss >> garbageVal) {
 			output << "Error - incorrect command" << endl;
-		  }
-		  else {
+		  } else {
 		  	string floor_is_valid = is_floor_valid(i, floors, trojans, true);
 		  	if (floor_is_valid.compare("") != 0) {
 		  		output << floor_is_valid << endl;
@@ -124,10 +124,10 @@ int main(int argc, char* argv[])
 	  else if (curr == "MOVEOUT") {
 		int i;
 		ss >> i;
-		if (ss.fail()) {
+		string garbageVal;
+		if (ss.fail() || ss >> garbageVal) {
 			output << "Error - incorrect command" << endl;
-		}
-		else {
+		} else {
 			string floor_is_valid = is_floor_valid(i, floors, trojans, false);
 			if (floor_is_valid.compare("") != 0) { 
 				output << floor_is_valid << endl; 
@@ -174,7 +174,8 @@ int main(int argc, char* argv[])
 	  	int i, j;
 	  	ss >> i;
 		ss >> j;
-		if (ss.fail()) {
+		string garbageVal;
+		if (ss.fail() || ss >> garbageVal) {
 			output << "Error - incorrect command" << endl;
 		}
 		else {
