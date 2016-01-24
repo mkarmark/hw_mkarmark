@@ -308,15 +308,18 @@ int main(int argc, char* argv[])
   ifstream input(argv[1]);
   ofstream output(argv[2]);
 
+  //declare all variables
   int floors;
   int *floorsizes;
   string ***trojans;
   int **num_possessions;
   string curr;
 
+  //initialize variables
   initialize_variables(trojans, floors, floorsizes, num_possessions, input);
 
   while(getline(input, curr)) {
+	  //read each line of the input file and act accordingly
 	  stringstream ss;
 	  ss << curr;
 	  ss >> curr;
