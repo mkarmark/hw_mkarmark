@@ -72,6 +72,7 @@ bool is_student_valid_on_floor(int student_number, int floor_number, int floors,
 		} else if (trojans[floor_number-1][student_number-1] == NULL && need_possessions) {
 			output << "Error - student " << student_number << " on floor " << floor_number 
 				<< " does not have possessions" << endl;
+			return false;
 		}
 		return true;
 	} else {
@@ -184,7 +185,7 @@ void move_out(string ***&trojans, int floors, int **&num_possessions, int *&floo
 			delete [] num_possessions[floor_number-1];
 			num_possessions[floor_number-1] = NULL;
 
-			floorsizes[floor_number-1] - 0;	
+			floorsizes[floor_number-1] = 0;	
 		}
 	}
 }
@@ -333,8 +334,8 @@ int main(int argc, char* argv[])
 	  } else if (curr == "OUTPUT") {
 	  	output_possessions(trojans, floors, num_possessions, floorsizes, ss, output);
 	  }	else if (curr != "") {
-	  	output << "Error - line does not begin with one of four commands: MOVEIN, MOVEOUT, 
-	  			OBTAIN, OUTPUT" << endl;
+	  	output << "Error - line does not begin with one of four commands: MOVEIN, MOVEOUT," << 
+	  			"OBTAIN, OUTPUT" << endl;
 	  }
   }
 
