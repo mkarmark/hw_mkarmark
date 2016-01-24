@@ -13,13 +13,16 @@ using namespace std;
   * @return bool False if the floor is invalid, True otherwise
   */
 bool is_floor_valid(int floor_number, int floors, string ***trojans, bool need_floor_empty, ofstream &output) {
+	//checking to see if the floor number is within the range of the building
 	if (floor_number <= 0 || floor_number > floors) {
 		output << "Error - floor " << floor_number << " does not exist" << endl;
 		return false;
 	} else {
+		//if the floor needs to be empty for the calling function, checking to see if the floor is not empty
 		if (trojans[floor_number-1] != NULL && need_floor_empty) {
 			output << "Error - floor " << floor_number << " is not empty" << endl;
 			return false;
+		//if the floor needs to be occupied for the calling function, checking to see if the floor is empty
 		} else if (trojans[floor_number-1] == NULL && !need_floor_empty) {
 			output << "Error  floor " << floor_number << " is currently empty" << endl;
 			return false;
@@ -39,13 +42,17 @@ bool is_floor_valid(int floor_number, int floors, string ***trojans, bool need_f
   * @return bool False if the student is invalid, True otherwise
   */
 bool is_student_valid_on_floor(int student_number, int floor_number, int floors, int *floorsizes, string ***trojans, ofstream &output, bool need_possessions) {
+	//if the floor is valid, check the conditions for the student
 	if (is_floor_valid(floor_number, floors, trojans, false, output)) {
+		//checking to see if the student index is within the range of the building
 		if (student_number <= 0 || student_number > floorsizes[floor_number-1]) {
 			output << "Error - student " << student_number << " does not exist on floor " << floor_number << endl;
 			return false;
+		//if the student should not have possessions for the calling function, checking to see if the student has possessions
 		} else if (trojans[floor_number-1][student_number-1] != NULL && !need_possessions) {
 			output << "Error - student " << student_number << " on floor " << floor_number << " already has possessions" << endl;
 			return false;
+		//if the student should have possessions for the calling function, checking to see if the student does not have possessions
 		} else if (trojans[floor_number-1][student_number-1] == NULL && need_possessions) {
 			output << "Error - student " << student_number << " on floor " << floor_number << " does not have possessions" << endl;
 		}
@@ -63,18 +70,20 @@ bool is_student_valid_on_floor(int student_number, int floor_number, int floors,
   * @param ifstream &input A parameter referring to the input stream
   */
 void initialize_variables(string ***&trojans, int &floors, int *&floorsizes, int **&num_possessions, ifstream &input) {
+	//initialize all the arrays to hold the information for the given number of floors
 	input >> floors;
   	trojans = new string**[floors];
-
   	floorsizes = new int[floors];
   	num_possessions = new int*[floors];
 
+  	//set further dimensions of the arrays to 0 or NULL, signifying an empty building
   	for (int i = 0; i < floors; i++) {
 		floorsizes[i] = 0;
 	  	trojans[i] = NULL;
 	  	num_possessions[i] = NULL;
   	}
 
+  	//read the line that has the number of floors 
   	string garbageLine;
   	getline(input, garbageLine);
 }
@@ -88,14 +97,18 @@ void initialize_variables(string ***&trojans, int &floors, int *&floorsizes, int
   * @param ofstream &output A reference to the output stream
   */
 void move_in(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream &ss, ofstream &output) {
-	int floor_number,num_students;
+	//collect information on the number of students who want to move in on the given floor
+	int floor_number, num_students;
 	ss >> floor_number;
 	ss >> num_students;
 	string garbageVal;
+	//print an error if the input is provided in an incorrect format
 	if (ss.fail() || ss >> garbageVal) {
 		output << "Error - incorrect command" << endl;
 	} else {
+		//check to see if the input numbers are valid
 		if (is_floor_valid(floor_number, floors, trojans, true, output)) {
+		  	//dynamically allocate memory for the given number of students and set the values to 0 or NULL
 		  	trojans[floor_number-1] = new string*[num_students];
 			num_possessions[floor_number-1] = new int[num_students];
 			for (int i=0; i<num_students; i++) {
@@ -116,13 +129,17 @@ void move_in(string ***&trojans, int floors, int **&num_possessions, int *&floor
   * @param ofstream &output A reference to the output stream
   */
 void move_out(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream &ss, ofstream &output) {
+	//collect information on the floor that is supposed to be evacuated
 	int floor_number;
 	ss >> floor_number;
 	string garbageVal;
+	//print an error if the input is provided in an incorrect format
 	if (ss.fail() || ss >> garbageVal) {
 		output << "Error - incorrect command" << endl;
 	} else {
+		//check to see if the input number is valid
 		if (is_floor_valid(floor_number, floors, trojans, false, output)) {
+			//deallocate the memory dynamically allocated for the floor
 			for (int i=0; i<floorsizes[floor_number-1]; i++) {
 				if (trojans[floor_number-1][i] != NULL) {
 					delete [] trojans[floor_number-1][i];
@@ -149,14 +166,18 @@ void move_out(string ***&trojans, int floors, int **&num_possessions, int *&floo
   * @param ofstream &output A reference to the output stream
   */
 void obtain_possessions(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream &ss, ofstream &output) {
+	//collect information on the student that is supposed to obtain possessions
 	int floor_number, student_number, possessions;
 	ss >> floor_number;
 	ss >> student_number;
 	ss >> possessions;
+	//print an error if the input is provided in an incorrect format 
 	if (ss.fail()) {
 	  	output << "Error - incorrect command" << endl;
 	} else {
+		//check to see if the input numbers are valid
 	  	if (is_student_valid_on_floor(student_number, floor_number, floors, floorsizes, trojans, output, false)) {
+	  		//allocate memory for the number of possessions and update other variables accordingly
 	  		trojans[floor_number-1][student_number-1] = new string[possessions];
 			num_possessions[floor_number-1][student_number-1] = possessions;
 			for (int i=0; i<possessions; i++) {
@@ -177,14 +198,18 @@ void obtain_possessions(string ***&trojans, int floors, int **&num_possessions, 
   * @param ofstream &output A reference to the output stream
   */
 void output_possessions(string ***&trojans, int floors, int **&num_possessions, int *&floorsizes, stringstream& ss, ofstream &output) {
+	//collect information on the student whose possessions are to be printed out
 	int floor_number, student_number;
 	ss >> floor_number;
 	ss >> student_number;
 	string garbageVal;
+	//print an error if the input is provided in an incorrect format
 	if (ss.fail() || ss >> garbageVal) {
 		output << "Error - incorrect command" << endl;
 	} else {
+		//check to see if the input numbers are valid
 		if (is_student_valid_on_floor(student_number, floor_number, floors, floorsizes, trojans, output, true)) {
+	  		//print out the students possessions
 	  		for (int i = 0; i < num_possessions[floor_number-1][student_number-1]; i++) {
 	  			output << trojans[floor_number-1][student_number-1][i] << endl;
 	  		}
