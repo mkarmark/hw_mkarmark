@@ -1,13 +1,31 @@
+/**
+  * Name: Mitali Karmarkar
+  * USC ID: 6162824079
+  * Instructor: Aaron Cote T/Th 3:30
+  * HW1: Hw1q5.cpp 
+  */
+
 #include <iostream>
 #include <fstream>
 using namespace std;
 
-void print_last(string * terms, int length) {
+/** print_backwards A function that recursively reads words from a file and prints them backwards
+  * @param ifstream &in_file A reference to an input reader that reads words from the file
+  * @param int length The number of words in the file
+  */
+void print_backwards(ifstream &in_file, int length) {
+	//base case
 	if (length == 0) {
 		return;
-	} else {
-		cout << terms[length-1] << endl;
-		print_last(terms, length-1);
+	}
+	//keep reading in the words until there is nothing more to read
+	string word;
+	in_file >> word;
+	print_last(in_file, length-1);
+
+	//unless word is a delimiter, print it
+	if (word != "\n" && word != "\t" && word != " " && word != "") {
+		cout << word << endl;
 	}
 }
 
@@ -22,41 +40,20 @@ int main(int argc, char * argv[]) {
 	ifstream in_file;
 	in_file.open(file_name);
 
-	int num_words;
-
-	in_file >> num_words;
-
+	//incorrect file
 	if (in_file.fail()) {
-		cerr << "File did not start with number of words!" << endl;
-		return -1;
-	}
+		cerr << "File does not exist" << endl;
+	} else {
+		int num_words;
 
-	/*const char ** words = new const char*[num_words];
-	//char temp_bufs */
+		in_file >> num_words;
 
-	string * words = new string[num_words];
-	for (int i=0; i<num_words; i++) {
-		string word;
-		in_file >> word; 
 		if (in_file.fail()) {
-			cerr << "Discrepancy between number of words listed at the top and actual number of words" << endl;
+			cerr << "File did not start with number of words!" << endl;
 			return -1;
 		}
-		/*int length = word.length();
-		words[i] = new char[length];
-		words[i] = word.c_str();
-		//words[i] = word.c_str(); */
-		words[i] = word;
+
+		print_backwards(in_file, num_words);
 	}
- /*
-	for (int i=0; i<num_words; i++) {
-		cout << words[i] << endl;
-		//delete [] words[i];
-	}  */
-
-	print_last(words, num_words);
-
-	delete [] words;
-
 }
 
