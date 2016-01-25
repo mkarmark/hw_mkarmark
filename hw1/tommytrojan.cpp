@@ -222,6 +222,10 @@ void obtain_possessions(string ***&trojans, int floors, int **&num_possessions, 
 			for (int i=0; i<possessions; i++) {
 				string n;
 				ss >> n;
+				if (ss.fail()) {
+					output << "Error - Possessions are listed in incorrect format" << endl;
+					break;
+				}
 				trojans[floor_number-1][student_number-1][i] = n;
 			}	
 	  	}
@@ -256,7 +260,14 @@ void output_possessions(string ***&trojans, int floors, int **&num_possessions, 
 			trojans, output, true)) {
 	  		//print out the students possessions
 	  		for (int i = 0; i < num_possessions[floor_number-1][student_number-1]; i++) {
-	  			output << trojans[floor_number-1][student_number-1][i] << endl;
+	  			string possession = trojans[floor_number-1][student_number-1][i];
+	  			//possession will be an empty string if there was a discrepancy between the
+	  			//number of possessions the OBTAIN line said there would be and the number
+	  			//of possessions actually on the OBTAIN line. 
+	  			if (possession != "") {
+	  				output << possession << endl;
+	  			}
+	  			//output << trojans[floor_number-1][student_number-1][i] << endl;
 	  		}
 		}
 	}
