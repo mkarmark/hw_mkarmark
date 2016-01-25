@@ -21,7 +21,7 @@ void print_backwards(ifstream &in_file, int length) {
 	//keep reading in the words until there is nothing more to read
 	string word;
 	in_file >> word;
-	print_last(in_file, length-1);
+	print_backwards(in_file, length-1);
 
 	//unless word is a delimiter, print it
 	if (word != "\n" && word != "\t" && word != " " && word != "") {
