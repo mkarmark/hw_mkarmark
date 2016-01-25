@@ -23,19 +23,19 @@ using namespace std;
 bool is_floor_valid(int floor_number, int floors, string ***trojans, bool need_floor_empty, 
 			ofstream &output) {
 	//checking to see if the floor number is within the range of the building
-	if (floor_number <= 0 || floor_number > floors) {
+	if (floor_number < 0 || floor_number >= floors) {
 		output << "Error - floor " << floor_number << " does not exist" << endl;
 		return false;
 	} else {
 		//if the floor needs to be empty for the calling function, checking to see if the floor 
 		//not empty
-		if (trojans[floor_number-1] != NULL && need_floor_empty) {
+		if (trojans[floor_number] != NULL && need_floor_empty) {
 			output << "Error - floor " << floor_number << " is not empty" << endl;
 			return false;
 		//if the floor needs to be occupied for the calling function, checking to see if the 
 	    //floor is empty
-		} else if (trojans[floor_number-1] == NULL && !need_floor_empty) {
-			output << "Error  floor " << floor_number << " is currently empty" << endl;
+		} else if (trojans[floor_number] == NULL && !need_floor_empty) {
+			output << "Error - floor " << floor_number << " is currently empty" << endl;
 			return false;
 		}
 	}
@@ -57,19 +57,19 @@ bool is_student_valid_on_floor(int student_number, int floor_number, int floors,
 	//if the floor is valid, check the conditions for the student
 	if (is_floor_valid(floor_number, floors, trojans, false, output)) {
 		//checking to see if the student index is within the range of the building
-		if (student_number <= 0 || student_number > floorsizes[floor_number-1]) {
+		if (student_number < 0 || student_number >= floorsizes[floor_number]) {
 			output << "Error - student " << student_number << " does not exist on floor " 
 				<< floor_number << endl;
 			return false;
 		//if the student should not have possessions for the calling function, checking to see 
 		//if the student has possessions
-		} else if (trojans[floor_number-1][student_number-1] != NULL && !need_possessions) {
+		} else if (trojans[floor_number][student_number] != NULL && !need_possessions) {
 			output << "Error - student " << student_number << " on floor " << floor_number 
 				<< " already has possessions" << endl;
 			return false;
 		//if the student should have possessions for the calling function, checking to see if 
 		//the student does not have possessions
-		} else if (trojans[floor_number-1][student_number-1] == NULL && need_possessions) {
+		} else if (trojans[floor_number][student_number] == NULL && need_possessions) {
 			output << "Error - student " << student_number << " on floor " << floor_number 
 				<< " does not have possessions" << endl;
 			return false;
@@ -90,25 +90,32 @@ bool is_student_valid_on_floor(int student_number, int floor_number, int floors,
   * @param int **&num_possessions A reference to the 2D array that keeps track of the number of 
   * possessions each student has on each floor
   * @param ifstream &input A parameter referring to the input stream
+  * @return bool True if successful, False otherwise 
   */
-void initialize_variables(string ***&trojans, int &floors, int *&floorsizes, 
-			int **&num_possessions, ifstream &input) {
+bool initialize_variables(string ***&trojans, int &floors, int *&floorsizes, 
+			int **&num_possessions, ifstream &input, ofstream &output) {
 	//initialize all the arrays to hold the information for the given number of floors
 	input >> floors;
-  	trojans = new string**[floors];
-  	floorsizes = new int[floors];
-  	num_possessions = new int*[floors];
+	if (!input.fail()) {
+	  	trojans = new string**[floors];
+	  	floorsizes = new int[floors];
+	  	num_possessions = new int*[floors];
 
-  	//set further dimensions of the arrays to 0 or NULL, signifying an empty building
-  	for (int i = 0; i < floors; i++) {
-		floorsizes[i] = 0;
-	  	trojans[i] = NULL;
-	  	num_possessions[i] = NULL;
-  	}
+	  	//set further dimensions of the arrays to 0 or NULL, signifying an empty building
+	  	for (int i = 0; i < floors; i++) {
+			floorsizes[i] = 0;
+		  	trojans[i] = NULL;
+		  	num_possessions[i] = NULL;
+	  	}
 
-  	//read the line that has the number of floors 
-  	string garbageLine;
-  	getline(input, garbageLine);
+	  	//read the line that has the number of floors 
+	  	string garbageLine;
+	  	getline(input, garbageLine);
+	  	return true;
+	} else {
+		output << "Error - File does not start with number of floors" << endl;
+		return false;
+	}
 }
 
 /** move_in A function in which students move in on a given floor if possible
@@ -138,13 +145,13 @@ void move_in(string ***&trojans, int floors, int **&num_possessions, int *&floor
 		if (is_floor_valid(floor_number, floors, trojans, true, output)) {
 		  	//dynamically allocate memory for the given number of students and set the values 
 		  	//to 0 or NULL
-		  	trojans[floor_number-1] = new string*[num_students];
-			num_possessions[floor_number-1] = new int[num_students];
+		  	trojans[floor_number] = new string*[num_students];
+			num_possessions[floor_number] = new int[num_students];
 			for (int i=0; i<num_students; i++) {
-				trojans[floor_number-1][i] = NULL;
-				num_possessions[floor_number-1][i] = 0;
+				trojans[floor_number][i] = NULL;
+				num_possessions[floor_number][i] = 0;
 			} 	
-			floorsizes[floor_number-1] = num_students;
+			floorsizes[floor_number] = num_students;
 		}
 	}	  	 	
 }
@@ -173,19 +180,19 @@ void move_out(string ***&trojans, int floors, int **&num_possessions, int *&floo
 		//check to see if the input number is valid
 		if (is_floor_valid(floor_number, floors, trojans, false, output)) {
 			//deallocate the memory dynamically allocated for the floor
-			for (int i=0; i<floorsizes[floor_number-1]; i++) {
-				if (trojans[floor_number-1][i] != NULL) {
-					delete [] trojans[floor_number-1][i];
-					trojans[floor_number-1][i] = NULL;
+			for (int i=0; i<floorsizes[floor_number]; i++) {
+				if (trojans[floor_number][i] != NULL) {
+					delete [] trojans[floor_number][i];
+					trojans[floor_number][i] = NULL;
 				}
 			} 
-			delete [] trojans[floor_number-1];
-			trojans[floor_number-1] = NULL;
+			delete [] trojans[floor_number];
+			trojans[floor_number] = NULL;
 
-			delete [] num_possessions[floor_number-1];
-			num_possessions[floor_number-1] = NULL;
+			delete [] num_possessions[floor_number];
+			num_possessions[floor_number] = NULL;
 
-			floorsizes[floor_number-1] = 0;	
+			floorsizes[floor_number] = 0;	
 		}
 	}
 }
@@ -217,8 +224,8 @@ void obtain_possessions(string ***&trojans, int floors, int **&num_possessions, 
 		//check to see if the input numbers are valid
 	  	if (is_student_valid_on_floor(student_number, floor_number, floors, floorsizes, trojans, output, false)) {
 	  		//allocate memory for the number of possessions and update other variables accordingly
-	  		trojans[floor_number-1][student_number-1] = new string[possessions];
-			num_possessions[floor_number-1][student_number-1] = possessions;
+	  		trojans[floor_number][student_number] = new string[possessions];
+			num_possessions[floor_number][student_number] = possessions;
 			for (int i=0; i<possessions; i++) {
 				string n;
 				ss >> n;
@@ -226,8 +233,13 @@ void obtain_possessions(string ***&trojans, int floors, int **&num_possessions, 
 					output << "Error - Possessions are listed in incorrect format" << endl;
 					break;
 				}
-				trojans[floor_number-1][student_number-1][i] = n;
+				trojans[floor_number][student_number][i] = n;
 			}	
+			//check to see if there are not any extra possessions listed after the k possessions collected
+			string extra;
+			if (ss >> extra) {
+				output << "Error - Too many possessions listed and only " << possessions << " stored" << endl;
+			}
 	  	}
 	}  			
 }
@@ -259,15 +271,14 @@ void output_possessions(string ***&trojans, int floors, int **&num_possessions, 
 		if (is_student_valid_on_floor(student_number, floor_number, floors, floorsizes, 
 			trojans, output, true)) {
 	  		//print out the students possessions
-	  		for (int i = 0; i < num_possessions[floor_number-1][student_number-1]; i++) {
-	  			string possession = trojans[floor_number-1][student_number-1][i];
+	  		for (int i = 0; i < num_possessions[floor_number][student_number]; i++) {
+	  			string possession = trojans[floor_number][student_number][i];
 	  			//possession will be an empty string if there was a discrepancy between the
 	  			//number of possessions the OBTAIN line said there would be and the number
 	  			//of possessions actually on the OBTAIN line. 
 	  			if (possession != "") {
 	  				output << possession << endl;
 	  			}
-	  			//output << trojans[floor_number-1][student_number-1][i] << endl;
 	  		}
 		}
 	}
@@ -328,28 +339,33 @@ int main(int argc, char* argv[])
   string curr;
 
   //initialize variables
-  initialize_variables(trojans, floors, floorsizes, num_possessions, input);
+  bool initialization = 
+  		initialize_variables(trojans, floors, floorsizes, num_possessions, input, output);
 
-  while(getline(input, curr)) {
-	  //read each line of the input file and act accordingly
-	  stringstream ss;
-	  ss << curr;
-	  ss >> curr;
+  if (initialization) {
+	  while(getline(input, curr)) {
+		  //read each line of the input file and act accordingly
+		  stringstream ss;
+		  ss << curr;
+		  ss >> curr;
 
-	  if (curr == "MOVEIN") {
-		move_in(trojans, floors, num_possessions, floorsizes, ss, output);
-	  } else if (curr == "MOVEOUT") {
-		move_out(trojans, floors, num_possessions, floorsizes, ss, output);
-	  } else if (curr == "OBTAIN") {
-	  	obtain_possessions(trojans, floors, num_possessions, floorsizes, ss, output);
-	  } else if (curr == "OUTPUT") {
-	  	output_possessions(trojans, floors, num_possessions, floorsizes, ss, output);
-	  }	else if (curr != "") {
-	  	output << "Error - line does not begin with one of four commands: MOVEIN, MOVEOUT," << 
-	  			"OBTAIN, OUTPUT" << endl;
+		  if (curr == "MOVEIN") {
+			move_in(trojans, floors, num_possessions, floorsizes, ss, output);
+		  } else if (curr == "MOVEOUT") {
+			move_out(trojans, floors, num_possessions, floorsizes, ss, output);
+		  } else if (curr == "OBTAIN") {
+		  	obtain_possessions(trojans, floors, num_possessions, floorsizes, ss, output);
+		  } else if (curr == "OUTPUT") {
+		  	output_possessions(trojans, floors, num_possessions, floorsizes, ss, output);
+		  }	else if (curr != "") {
+		  	output << "Error - line does not begin with one of four commands: MOVEIN, MOVEOUT," << 
+		  			"OBTAIN, OUTPUT" << endl;
+		  } 
 	  }
-  }
 
-  clear_building(floors, floorsizes, trojans, num_possessions);
-  return 0;
+	  clear_building(floors, floorsizes, trojans, num_possessions);
+	  return 0;
+  } else {
+  	  return -1;
+  }
 }
