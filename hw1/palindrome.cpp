@@ -9,7 +9,7 @@
 #include <sstream>
 #include <cstring> 
 
-using namespace std;
+using namespace std; 
 
 /** helper The function that checks whether a string is a palindrome 
  * @param stringstream &input A reference to a stringstream parsing the commandline
