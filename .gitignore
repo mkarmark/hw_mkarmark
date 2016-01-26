@@ -27,5 +27,54 @@
 *.out
 *.app
 
-#Programs
+# Garbage 
+*.txt~
+*.md~
+*.swp
+
+# Programs
 hw1q5
+tommytrojan
+palindrome
+.gitignore
+
+# Test Files 
+hw1q5.txt
+hw1q5test1.txt
+hw1q5test2.txt
+hw1q5test3.txt
+hw1q6test1.txt
+hw1q6test2.txt
+hw1q6test3.txt
+hw1q6test4.txt
+hw1q6test5.txt
+hw1q6test6.txt
+hw1q6test7.txt
+hw1q6test8.txt
+hw1q6test9.txt
+hw1q6test10.txt
+hw1q6test11.txt
+hw1q6test12.txt
+hw1q6test13.txt
+hw1q6test14.txt
+hw1q6test15.txt
+hw1q6test16.txt
+hw1q6test17.txt
+hw1q6test1output.txt
+hw1q6test2output.txt
+hw1q6test3output.txt
+hw1q6test4output.txt
+hw1q6test5output.txt
+hw1q6test6output.txt
+hw1q6test7output.txt
+hw1q6test8output.txt
+hw1q6test9output.txt
+hw1q6test10output.txt
+hw1q6test11output.txt
+hw1q6test12output.txt
+hw1q6test13output.txt
+hw1q6test14output.txt
+hw1q6test15output.txt
+hw1q6test16output.txt
+hw1q6test17output.txt
+dfd
