@@ -25,5 +25,5 @@ Part (b)
 2. git log
 
 Part (c)
-Because a commit statement needs a commit message, git will launch the system's
-default text editor that will convey this message to the user.
+Because a commit statement needs a commit message, git will launch the 
+system's default text editor that will convey this message to the user.
